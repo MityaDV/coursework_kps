@@ -1,3 +1,5 @@
+import jwt from 'jsonwebtoken'
+import { Config } from './graphql/config'
 import express, { Request, Response, NextFunction } from 'express'
 import http from 'http'
 import { createConnection } from 'typeorm'
@@ -26,12 +28,25 @@ async function startServer() {
   const schema = await buildSchema({
     resolvers: [`${__dirname}/graphql/**/*Resolver.${ext}`],
     dateScalarMode: 'isoDate',
+    authChecker: (resolverData, roles) => {
+      return !!resolverData.context.user
+    },
   })
 
   const apolloServer = new ApolloServer({
     schema: schema,
     introspection: process.env.NODE_ENV != 'production',
     plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
+    context: (session) => {
+      const out: any = {}
+      const token = session.req.header('Authorization')
+
+      if (token) {
+        out.user = jwt.verify(token, Config.secretKey)
+      }
+      out.session = session
+      return out
+    },
   })
   await apolloServer.start()
   apolloServer.applyMiddleware({

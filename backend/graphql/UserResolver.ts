@@ -1,4 +1,5 @@
-import { Arg, Mutation, Resolver } from 'type-graphql'
+import { UserGraphQL } from './types/UserGraphQL'
+import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql'
 import { User } from '../typeorm/models/User'
 import bcrypt from 'bcrypt'
 import { UserRegisterInputGraphQL } from './types/UserRegisterInputGraphQL'
@@ -54,5 +55,10 @@ export class UserResolver {
       return out
     }
     throw new Error('wrong user name or password')
+  }
+  @Query(() => UserGraphQL)
+  @Authorized()
+  async checkAuthorizationUser(@Ctx() ctx: any) {
+    return User.findOneOrFail(ctx.user.id)
   }
 }
