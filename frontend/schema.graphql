@@ -1,0 +1,36 @@
+# This file was generated based on ".graphqlconfig". Do not edit manually.
+
+schema {
+    query: Query
+    mutation: Mutation
+}
+
+type Mutation {
+    userLogin(data: UserRegisterInputGraphQL!): UserRegisterGraphQL!
+    userRegister(data: UserRegisterInputGraphQL!): UserRegisterGraphQL!
+}
+
+type Query {
+    checkAuthorizationUser: UserGraphQL!
+    helloWorld: String
+    sayHi(msg: String): String!
+}
+
+type UserGraphQL {
+    created: DateTime!
+    id: Int!
+    userName: String!
+}
+
+type UserRegisterGraphQL {
+    token: String!
+    user: UserGraphQL!
+}
+
+"The javascript `Date` as string. Type represents date and time as the ISO Date string."
+scalar DateTime
+
+input UserRegisterInputGraphQL {
+    password: String!
+    userName: String!
+}
