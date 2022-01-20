@@ -2,7 +2,8 @@
   <div>
     <div id="nav">
       <router-link to="/">Hello World</router-link>
-      <router-link to="/about">About</router-link>
+      <router-link to="/login">Login</router-link>
+      <router-link to="/profile">Profile</router-link>
     </div>
     <router-view />
   </div>
@@ -30,3 +31,8 @@
   }
 }
 </style>
+<script>
+export default {
+  components: {},
+}
+</script>

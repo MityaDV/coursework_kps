@@ -1,4 +1,3 @@
-<script src="../generated/graphql.ts"></script>
 <template>
   <div>
     <button @click="loadData">Query</button>
@@ -7,23 +6,24 @@
 </template>
 
 <script lang="ts">
-import { Vue } from "vue-class-component";
+import { Vue } from 'vue-class-component'
 
 // import { Query } from '@/generated/graphql'
-import gql from "graphql-tag"; // @ is an alias to /src
+import gql from 'graphql-tag'
+import { Query } from '@/generated/graphql' // @ is an alias to /src
 
 export default class HelloWorld extends Vue {
-  msg = "";
+  msg = ''
   async loadData() {
-    const res = await this.$apollo.query({
+    const res = await this.$apollo.query<Pick<Query, 'helloWorld'>>({
       query: gql`
         query {
           helloWorld
         }
       `,
-    });
+    })
 
-    this.msg = res.data.helloWorld || "";
+    this.msg = res.data.helloWorld || ''
 
     // const data: Query['helloWorld'] = res?.data?.helloWorld
   }

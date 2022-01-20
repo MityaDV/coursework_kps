@@ -14,9 +14,8 @@
     "@graphql-codegen/typescript": "^2.4.1",
     "@vue/apollo-option": "^4.0.0-alpha.16",
     "apollo-cache-inmemory": "^1.6.6",
-    "apollo-client": "^2.6.10",
-    "apollo-link": "^1.2.14",
     "apollo-link-http": "^1.5.17",
+    "apollo-upload-client": "^17.0.0",
     "core-js": "^3.6.5",
     "graphql": "^16.2.0",
     "graphql-tag": "^2.12.6",
@@ -27,6 +26,7 @@
     "vuex": "^4.0.0-0"
   },
   "devDependencies": {
+    "@types/apollo-upload-client": "^17.0.0",
     "@typescript-eslint/eslint-plugin": "^4.18.0",
     "@typescript-eslint/parser": "^4.18.0",
     "@vue/cli-plugin-babel": "~4.5.0",

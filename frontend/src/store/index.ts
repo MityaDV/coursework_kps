@@ -1,8 +1,14 @@
-import { createStore } from "vuex";
+import { createStore } from 'vuex'
 
-export default createStore({
-  state: {},
-  mutations: {},
-  actions: {},
-  modules: {},
-});
+export const store = createStore({
+  state() {
+    return {
+      token: '',
+    }
+  },
+  mutations: {
+    setToken(state: any, payload) {
+      state.token = payload
+    },
+  },
+})
