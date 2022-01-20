@@ -20,6 +20,7 @@
   "homepage": "https://github.com/MityaDV/coursework_kps#readme",
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
+    "@types/cookie-parser": "^1.4.2",
     "@types/express": "^4.17.13",
     "@types/jsonwebtoken": "^8.5.6",
     "@typescript-eslint/eslint-plugin": "^5.6.0",
@@ -32,11 +33,14 @@
     "typescript": "^4.5.3"
   },
   "dependencies": {
+    "@types/graphql-upload": "^8.0.9",
     "apollo-server-express": "^3.5.0",
     "bcrypt": "^5.0.1",
     "class-validator": "^0.13.2",
+    "cookie-parser": "^1.4.6",
     "express": "^4.17.2",
     "graphql": "^15.3.0",
+    "graphql-upload": "^13.0.0",
     "jsonwebtoken": "^8.5.1",
     "mysql2": "^2.3.3",
     "reflect-metadata": "^0.1.13",

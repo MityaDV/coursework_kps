@@ -6,6 +6,7 @@ import { UserRegisterInputGraphQL } from './types/UserRegisterInputGraphQL'
 import { UserRegisterGraphQL } from './types/UserRegisterGraphQL'
 import jwt from 'jsonwebtoken'
 import { Config } from './config'
+import { AppContext } from './types/AppContext'
 
 @Resolver()
 export class UserResolver {
@@ -38,8 +39,9 @@ export class UserResolver {
   }
   @Mutation(() => UserRegisterGraphQL)
   async userLogin(
-    @Arg('data', () => UserRegisterInputGraphQL)
-    data: UserRegisterInputGraphQL
+    @Arg('data', () => UserRegisterInputGraphQL, { validate: false })
+    data: UserRegisterInputGraphQL,
+    @Ctx() ctx: AppContext
   ): Promise<UserRegisterGraphQL> {
     const user = await User.findOneOrFail({
       where: { userName: data.userName },
@@ -52,6 +54,7 @@ export class UserResolver {
         Config.secretKey,
         { expiresIn: '30 days' }
       )
+      ctx.session.res.cookie('token', out.token, { path: '/' })
       return out
     }
     throw new Error('wrong user name or password')
