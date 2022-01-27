@@ -1,6 +1,7 @@
 import {
   BaseEntity,
   Column,
+  Entity,
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
@@ -8,6 +9,7 @@ import {
 } from 'typeorm'
 import { ChatRoom } from './ChatRoom'
 
+@Entity('messages')
 export class Message extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number
