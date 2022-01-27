@@ -2,7 +2,7 @@ import {
   BaseEntity,
   Column,
   Entity,
-  OneToMany,
+  ManyToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm'
 import { ChatRoom } from './ChatRoom'
@@ -15,7 +15,7 @@ export class User extends BaseEntity {
   userName: string = ''
   @Column({ type: 'varchar', length: 100 })
   password: string = ''
-  @OneToMany(() => ChatRoom)
+  @ManyToMany(() => ChatRoom)
   chats: ChatRoom[]
   @Column({ type: 'datetime' })
   created: Date = new Date()
