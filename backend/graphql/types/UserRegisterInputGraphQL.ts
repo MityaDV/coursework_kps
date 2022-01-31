@@ -8,7 +8,7 @@ export class UserRegisterInputGraphQL {
   @Field(() => String)
   @CustomValidation(
     (value, args) => {
-      return value.length >= 6
+      return value.length >= 4
     },
     {
       message: 'Password must be more or equal to 6 characters',
