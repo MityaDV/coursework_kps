@@ -7,9 +7,9 @@ import { buildSchema } from 'type-graphql'
 import { ApolloServer } from 'apollo-server-express'
 import { ApolloServerPluginDrainHttpServer } from 'apollo-server-core'
 import cookieParser from 'cookie-parser'
-import { chatRouter } from './typeorm/chatRouter'
+import { chatsRouter } from './typeorm/chatsRouter'
 import { userRouter } from './typeorm/userRouter'
-import { userMessageRouter } from './typeorm/userMessageRouter'
+import { userChatRouter } from './typeorm/userChatRouter'
 // import {
 //   ConnectionContext,
 //   SubscriptionServer,
@@ -23,9 +23,9 @@ async function startServer() {
   // Container.set('pubSub', pubSub)
   const app = express()
   app.use(cookieParser())
-  app.use('/user', userRouter)
-  app.use('/chat', chatRouter)
-  app.use('/userChat', userMessageRouter)
+  app.use('/users', userRouter)
+  app.use('/chats', chatsRouter)
+  app.use('/userChat', userChatRouter)
   const httpServer = http.createServer(app)
 
   await createConnection({
