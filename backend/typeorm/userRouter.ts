@@ -19,7 +19,6 @@ userRouter.get('/userDetails', async (req, res) => {
 userRouter.get('/userMessage', async (req, res) => {
   const data = await createQueryBuilder(User, 'user')
     .leftJoin('user.users', 'userMsg')
-    // .select('Min(user.userId)', 'userName')
     .select('Min(message)', 'msg')
     .groupBy('user.id')
     .getRawMany()

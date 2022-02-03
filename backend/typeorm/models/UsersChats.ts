@@ -10,7 +10,7 @@ import {
 import { User } from './User'
 import { ChatRoom } from './ChatRoom'
 
-@Entity('messages')
+@Entity('users_chats')
 export class UsersChats extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number
