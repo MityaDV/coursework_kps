@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div id="app">
     <div id="nav">
-      <router-link to="/">Hello World</router-link>
+      <!--      <router-link to="/">Hello World</router-link>-->
       <router-link to="/login">Login</router-link>
       <router-link to="/profile">Profile</router-link>
     </div>
@@ -16,14 +16,21 @@
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex-wrap: nowrap;
 }
 
 #nav {
+  display: flex;
+  justify-content: center;
   padding: 30px;
 
   a {
     font-weight: bold;
     color: #2c3e50;
+    margin: 0 20px 0 0;
 
     &.router-link-exact-active {
       color: #42b983;

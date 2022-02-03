@@ -1,16 +1,54 @@
 <template>
-  <div class="about">
-    <h1>Login</h1>
-    <div>
-      <input v-model="username" placeholder="user name" />
+  <div>
+    <div class="row" v-if="isEnter">
+      <div class="col-md-12">
+        <div class="card">
+          <h3 class="card-header">Chat Room</h3>
+          <div class="card-body"></div>
+        </div>
+      </div>
     </div>
-    <div>
-      <input v-model="password" placeholder="password" />
-    </div>
-    <button @click="SignUp">Sign up</button>
-    <button @click="SignIn">Sign in</button>
-    <div>
-      <span v-for="(msg, index) in messages" :key="index">{{ msg }}</span>
+
+    <div class="row" v-else>
+      <div class="col-md-12">
+        <h1>Login</h1>
+        <div class="container">
+          <form>
+            <div class="form-group">
+              <div class="col-sm-6">
+                <input
+                  type="text"
+                  class="form-control"
+                  v-model="username"
+                  placeholder="user name"
+                />
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="col-sm-6">
+                <input
+                  type="text"
+                  class="form-control"
+                  v-model="password"
+                  placeholder="password"
+                />
+              </div>
+            </div>
+            <div class="btn-group" style="margin-bottom: 20px">
+              <button class="btn btn-primary" type="button" @click="SignUp">
+                Sign up
+              </button>
+              <button class="btn btn-primary" type="button" @click="SignIn">
+                Sign in
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div>
+        <span v-for="(msg, index) in messages" :key="index">{{ msg }}</span>
+      </div>
     </div>
   </div>
 </template>
@@ -29,6 +67,8 @@ export default class Login extends Vue {
   password = ''
   private $store: any
   messages: any = []
+  isEnter = false
+
   async SignIn() {
     this.messages.length = 0
     const res = await this.$apollo
@@ -118,8 +158,10 @@ button {
   border-radius: 3px;
   border-width: 0;
   color: white;
+  margin: 0 10px 0 0;
+  padding: 5px;
 }
 input {
-  margin-bottom: 10px;
+  margin-bottom: 20px;
 }
 </style>
