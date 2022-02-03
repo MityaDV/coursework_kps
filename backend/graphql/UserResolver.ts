@@ -18,7 +18,7 @@ export class UserResolver {
     let user = await User.findOne({ where: { userName: data.userName } })
     if (user) {
       const error = new Error(
-        `User with given name(${data.userName}) already exists`
+        `User with given name(${data.userName}) already exists.`
       ) as any
       error.code = 422
       throw error
@@ -32,7 +32,7 @@ export class UserResolver {
     out.token = jwt.sign(
       { id: user.id, userName: user.userName },
       Config.secretKey,
-      { expiresIn: '30 days' }
+      { expiresIn: '60 days' }
     )
 
     return out
@@ -52,12 +52,12 @@ export class UserResolver {
       out.token = jwt.sign(
         { id: user.id, userName: user.userName },
         Config.secretKey,
-        { expiresIn: '30 days' }
+        { expiresIn: '60 days' }
       )
       ctx.session.res.cookie('token', out.token, { path: '/' })
       return out
     }
-    throw new Error('wrong user name or password')
+    throw new Error('Wrong user name or password.')
   }
   @Query(() => UserGraphQL)
   @Authorized()
