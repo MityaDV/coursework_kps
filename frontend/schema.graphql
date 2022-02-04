@@ -5,6 +5,12 @@ schema {
     mutation: Mutation
 }
 
+type ChatRoomGraphQL {
+    chatName: String!
+    createAt: DateTime!
+    id: ID!
+}
+
 type Mutation {
     userLogin(data: UserRegisterInputGraphQL!): UserRegisterGraphQL!
     userRegister(data: UserRegisterInputGraphQL!): UserRegisterGraphQL!
@@ -14,6 +20,7 @@ type Query {
     checkAuthorizationUser: UserGraphQL!
     helloWorld: String
     sayHi(msg: String): String!
+    userList: [UsersChatsGraphQL!]!
 }
 
 type UserGraphQL {
@@ -25,6 +32,15 @@ type UserGraphQL {
 type UserRegisterGraphQL {
     token: String!
     user: UserGraphQL!
+}
+
+type UsersChatsGraphQL {
+    chatId: ChatRoomGraphQL
+    createdAt: DateTime!
+    id: ID!
+    message: String!
+    messageId: Int!
+    userId: UserGraphQL
 }
 
 "The javascript `Date` as string. Type represents date and time as the ISO Date string."

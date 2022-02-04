@@ -11,7 +11,7 @@ export class UserRegisterInputGraphQL {
       return value.length >= 4
     },
     {
-      message: 'Password must be more or equal to 6 characters',
+      message: 'Password must be more or equal to 4 characters',
       groups: ['register'],
     }
   )

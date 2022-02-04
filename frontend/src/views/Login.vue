@@ -4,7 +4,26 @@
       <div class="col-md-12">
         <div class="card">
           <h3 class="card-header">Chat Room</h3>
-          <div class="card-body"></div>
+          <div class="card-body">
+            <dl>
+              <dt></dt>
+              <dd></dd>
+            </dl>
+            <hr />
+            <form class="form-inline">
+              <div class="input-group">
+                <input
+                  type="text"
+                  class="form-control"
+                  v-model="message"
+                  placeholder="Type your message..."
+                />
+                <div class="input-group-btn">
+                  <button class="btn btn-primary">Send</button>
+                </div>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
     </div>
@@ -65,12 +84,13 @@ import {
 export default class Login extends Vue {
   username = ''
   password = ''
+  message = ''
   private $store: any
-  messages: any = []
-  isEnter = false
+  errorMessages: any = []
+  isEnter = true
 
   async SignIn() {
-    this.messages.length = 0
+    this.errorMessages.length = 0
     const res = await this.$apollo
       .mutate<Pick<Mutation, 'userLogin'>, MutationUserLoginArgs>({
         mutation: gql`
@@ -93,19 +113,22 @@ export default class Login extends Vue {
         },
       })
       .then((res) => {
-        localStorage.setItem('token', res.data?.userLogin.token || '')
-        this.$store.commit('setToken', res.data?.userLogin?.token || '')
+        if (res.data?.userLogin.user.userName) {
+          this.isEnter = true
+          localStorage.setItem('token', res.data?.userLogin.token || '')
+          this.$store.commit('setToken', res.data?.userLogin?.token || '')
+        }
       })
       .catch((error) => {
-        this.messages.length = 0
+        this.errorMessages.length = 0
         Login.graphQLErrorMessages(error).forEach((it) => {
-          this.messages.push(it)
+          this.errorMessages.push(it)
         })
       })
   }
 
   async SignUp() {
-    this.messages.length = 0
+    this.errorMessages.length = 0
     const res = await this.$apollo
       .mutate<Pick<Mutation, 'userRegister'>, MutationUserRegisterArgs>({
         mutation: gql`
@@ -128,12 +151,15 @@ export default class Login extends Vue {
         },
       })
       .then((res) => {
-        this.$store.commit('setToken', res.data?.userRegister?.token || '')
+        this.isEnter = true
+        if (res.data?.userRegister.user.userName) {
+          this.$store.commit('setToken', res.data?.userRegister?.token || '')
+        }
       })
       .catch((error) => {
-        this.messages.length = 0
+        this.errorMessages.length = 0
         Login.graphQLErrorMessages(error).forEach((it) => {
-          this.messages.push(it)
+          this.errorMessages.push(it)
         })
       })
   }

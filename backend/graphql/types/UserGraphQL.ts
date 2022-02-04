@@ -1,11 +1,12 @@
 import { Field, Int, ObjectType } from 'type-graphql'
+import { UserChatInfoGraphQL } from './UserChatInfoGraphQL'
 
 @ObjectType()
 export class UserGraphQL {
-  @Field(() => Int)
+  @Field(() => Int, { nullable: true })
   id: number
-  @Field()
+  @Field(() => String, { nullable: true })
   userName: string
-  @Field(() => Date)
+  @Field(() => Date, { nullable: true })
   created: Date
 }

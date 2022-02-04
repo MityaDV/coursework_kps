@@ -34,9 +34,9 @@ export class UserResolver {
       Config.secretKey,
       { expiresIn: '60 days' }
     )
-
     return out
   }
+
   @Mutation(() => UserRegisterGraphQL)
   async userLogin(
     @Arg('data', () => UserRegisterInputGraphQL, { validate: false })
@@ -59,6 +59,7 @@ export class UserResolver {
     }
     throw new Error('Wrong user name or password.')
   }
+
   @Query(() => UserGraphQL)
   @Authorized()
   async checkAuthorizationUser(@Ctx() ctx: any) {
