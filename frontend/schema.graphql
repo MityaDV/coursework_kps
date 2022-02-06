@@ -6,9 +6,9 @@ schema {
 }
 
 type ChatRoomGraphQL {
-    chatName: String!
-    createAt: DateTime!
-    id: ID!
+    chatName: String
+    createAt: DateTime
+    id: ID
 }
 
 type Mutation {
@@ -20,27 +20,27 @@ type Query {
     checkAuthorizationUser: UserGraphQL!
     helloWorld: String
     sayHi(msg: String): String!
-    userList: [UsersChatsGraphQL!]!
+    userChatInfo: [UserChatInfoGraphQL!]!
+}
+
+type UserChatInfoGraphQL {
+    chat: ChatRoomGraphQL!
+    chatId: Int!
+    createdAt: DateTime!
+    message: String!
+    user: UserGraphQL!
+    userId: Int!
 }
 
 type UserGraphQL {
-    created: DateTime!
-    id: Int!
-    userName: String!
+    created: DateTime
+    id: Int
+    userName: String
 }
 
 type UserRegisterGraphQL {
     token: String!
     user: UserGraphQL!
-}
-
-type UsersChatsGraphQL {
-    chatId: ChatRoomGraphQL
-    createdAt: DateTime!
-    id: ID!
-    message: String!
-    messageId: Int!
-    userId: UserGraphQL
 }
 
 "The javascript `Date` as string. Type represents date and time as the ISO Date string."

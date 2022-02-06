@@ -23,6 +23,7 @@ export class ChatResolver {
     }
     return out
   })
+
   @FieldResolver(() => UserGraphQL)
   async user(@Root() user: UsersChats) {
     if (user.userId) return this.userDataLoader.load(user.userId)
@@ -37,6 +38,7 @@ export class ChatResolver {
     }
     return out
   })
+
   @FieldResolver(() => ChatRoomGraphQL)
   async chat(@Root() chat: UsersChats) {
     if (chat.chatId) return this.chatDataLoader.load(chat.chatId)
