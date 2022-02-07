@@ -5,12 +5,13 @@
         <div class="card">
           <h3 class="card-header">Chat Room</h3>
           <div class="card-body">
-            <dl>
-              <dt></dt>
-              <dd></dd>
-            </dl>
+            <ul v-for="(chat, id) in data" :key="id">
+              <li>{{ chat.user.userName }}</li>
+              <li>{{ chat.message }}</li>
+              <li>{{ chat.createdAt }}</li>
+            </ul>
             <hr />
-            <form class="form-inline">
+            <form method="post" class="form-inline">
               <div class="input-group">
                 <input
                   type="text"
@@ -30,7 +31,7 @@
 
     <div class="row" v-else>
       <div class="col-md-12">
-        <h1>Login</h1>
+        <h1>Live Chat</h1>
         <div class="container">
           <form>
             <div class="form-group">
@@ -79,15 +80,18 @@ import {
   Mutation,
   MutationUserLoginArgs,
   MutationUserRegisterArgs,
+  Query,
 } from '@/generated/graphql'
 
-export default class Login extends Vue {
+export default class LiveChat extends Vue {
   username = ''
   password = ''
   message = ''
+  data: any = []
   private $store: any
   errorMessages: any = []
-  isEnter = true
+  isEnter = false
+  messages = []
 
   async SignIn() {
     this.errorMessages.length = 0
@@ -115,13 +119,12 @@ export default class Login extends Vue {
       .then((res) => {
         if (res.data?.userLogin.user.userName) {
           this.isEnter = true
-          localStorage.setItem('token', res.data?.userLogin.token || '')
           this.$store.commit('setToken', res.data?.userLogin?.token || '')
         }
       })
       .catch((error) => {
         this.errorMessages.length = 0
-        Login.graphQLErrorMessages(error).forEach((it) => {
+        LiveChat.graphQLErrorMessages(error).forEach((it: any) => {
           this.errorMessages.push(it)
         })
       })
@@ -158,15 +161,37 @@ export default class Login extends Vue {
       })
       .catch((error) => {
         this.errorMessages.length = 0
-        Login.graphQLErrorMessages(error).forEach((it) => {
+        LiveChat.graphQLErrorMessages(error).forEach((it: any) => {
           this.errorMessages.push(it)
         })
       })
   }
 
-  static graphQLErrorMessages(errorsFromCatch: any): any[] {
+  async loadData() {
+    const res = await this.$apollo.query<Pick<Query, 'userChatInfo'>>({
+      query: gql`
+        query {
+          userChatInfo {
+            user {
+              id
+              userName
+            }
+            message
+            createdAt
+            chat {
+              chatName
+            }
+          }
+        }
+      `,
+    })
+    this.data.push(...res.data?.userChatInfo)
+  }
+
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+  static graphQLErrorMessages(errorsFromCatch: any): never[] {
     const errors = errorsFromCatch.graphQLErrors[0]
-    const messages = []
+    const messages: any = []
     // eslint-disable-next-line no-prototype-builtins
     if (errors.hasOwnProperty('functionError')) {
       const customErrors = JSON.parse(errors.functionError)
@@ -175,6 +200,9 @@ export default class Login extends Vue {
       messages.push(errors.message)
     }
     return messages
+  }
+  created(): void {
+    this.loadData()
   }
 }
 </script>

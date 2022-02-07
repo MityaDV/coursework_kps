@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <div id="nav">
-      <router-link to="/">Login</router-link>
+      <router-link to="/">Chat</router-link>
       <router-link to="/profile">Profile</router-link>
     </div>
     <router-view />

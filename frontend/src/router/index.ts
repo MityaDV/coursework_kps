@@ -1,11 +1,11 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
-import Login from '../views/Login.vue'
+import LiveChat from '../views/LiveChat.vue'
 
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
-    name: 'Login',
-    component: Login,
+    name: 'Chat',
+    component: LiveChat,
   },
   {
     path: '/profile',

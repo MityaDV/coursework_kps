@@ -12,8 +12,7 @@ import { ChatRoomGraphQL } from './types/ChatRoomGraphQL'
 export class ChatResolver {
   @Query(() => [UserChatInfoGraphQL])
   async userChatInfo() {
-    const data = await UsersChats.find()
-    return data
+    return await UsersChats.find()
   }
   userDataLoader = new DataLoader(async (ids: readonly number[]) => {
     const out = []
