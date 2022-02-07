@@ -27,12 +27,9 @@ export class UsersChats extends BaseEntity {
   @RelationId('chat')
   chatId: number
 
-  @Column({ type: 'int' })
-  messageId: number
-
   @Column({ type: 'text' })
   message: string
 
   @Column({ type: 'datetime' })
-  createdAt: Date = new Date()
+  createdAt: Date
 }

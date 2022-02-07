@@ -23,8 +23,15 @@ export type ChatRoomGraphQl = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  createChat: ChatRoomGraphQl;
+  sendMessage: Scalars['Boolean'];
   userLogin: UserRegisterGraphQl;
   userRegister: UserRegisterGraphQl;
+};
+
+
+export type MutationSendMessageArgs = {
+  data: UserMessageGraphQl;
 };
 
 
@@ -53,7 +60,7 @@ export type QuerySayHiArgs = {
 export type UserChatInfoGraphQl = {
   __typename?: 'UserChatInfoGraphQL';
   chat?: Maybe<ChatRoomGraphQl>;
-  createdAt: Scalars['DateTime'];
+  createdAt?: Maybe<Scalars['DateTime']>;
   message: Scalars['String'];
   user?: Maybe<UserGraphQl>;
 };
@@ -63,6 +70,13 @@ export type UserGraphQl = {
   created: Scalars['DateTime'];
   id: Scalars['Int'];
   userName: Scalars['String'];
+};
+
+export type UserMessageGraphQl = {
+  chatId: Scalars['Int'];
+  createdAt?: InputMaybe<Scalars['DateTime']>;
+  message: Scalars['String'];
+  userId: Scalars['Int'];
 };
 
 export type UserRegisterGraphQl = {

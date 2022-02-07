@@ -65,10 +65,9 @@
           </form>
         </div>
       </div>
-
-      <div>
-        <span v-for="(msg, index) in messages" :key="index">{{ msg }}</span>
-      </div>
+    </div>
+    <div>
+      <span v-for="(msg, index) in errorMessages" :key="index">{{ msg }}</span>
     </div>
   </div>
 </template>
@@ -87,11 +86,13 @@ export default class LiveChat extends Vue {
   username = ''
   password = ''
   message = ''
+  userChatName = ''
+
+  userId = 0
   data: any = []
   private $store: any
   errorMessages: any = []
   isEnter = false
-  messages = []
 
   async SignIn() {
     this.errorMessages.length = 0
@@ -119,6 +120,8 @@ export default class LiveChat extends Vue {
       .then((res) => {
         if (res.data?.userLogin.user.userName) {
           this.isEnter = true
+          this.userChatName = res.data?.userLogin.user.userName
+          this.userId = res.data?.userLogin.user.id
           this.$store.commit('setToken', res.data?.userLogin?.token || '')
         }
       })
@@ -159,6 +162,9 @@ export default class LiveChat extends Vue {
           this.$store.commit('setToken', res.data?.userRegister?.token || '')
         }
       })
+      .then(() => {
+        this.createChat()
+      })
       .catch((error) => {
         this.errorMessages.length = 0
         LiveChat.graphQLErrorMessages(error).forEach((it: any) => {
@@ -186,6 +192,20 @@ export default class LiveChat extends Vue {
       `,
     })
     this.data.push(...res.data?.userChatInfo)
+  }
+
+  async createChat() {
+    const res = await this.$apollo.mutate<Pick<Mutation, 'createChat'>>({
+      mutation: gql`
+        mutation {
+          createChat {
+            id
+            chatName
+            createdAt
+          }
+        }
+      `,
+    })
   }
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types

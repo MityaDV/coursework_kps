@@ -8,8 +8,8 @@ export class UserChatInfoGraphQL {
   user: UserGraphQL
   @Field()
   message: string
-  @Field(() => Date)
+  @Field(() => Date, { nullable: true })
   createdAt: Date
-  @Field(() => ChatRoomGraphQL, { nullable: true })
+  @Field(() => ChatRoomGraphQL)
   chat: ChatRoomGraphQL
 }

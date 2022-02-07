@@ -6,7 +6,7 @@ export const userChatRouter = express.Router()
 userChatRouter.get('/', async (req, res) => {
   const data = await UsersChats.find({
     // relations: ['chat', 'user'],
-    select: ['messageId', 'createdAt'],
+    select: ['createdAt'],
     where: {
       user: {
         id: In([1, 2]),

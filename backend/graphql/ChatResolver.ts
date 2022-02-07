@@ -1,4 +1,11 @@
-import { FieldResolver, Query, Resolver, Root } from 'type-graphql'
+import {
+  Arg,
+  FieldResolver,
+  Mutation,
+  Query,
+  Resolver,
+  Root,
+} from 'type-graphql'
 import { UserChatInfoGraphQL } from './types/UserChatInfoGraphQL'
 import { UsersChats } from '../typeorm/models/UsersChats'
 import { UserGraphQL } from './types/UserGraphQL'
@@ -7,6 +14,7 @@ import DataLoader from 'dataloader'
 import { In } from 'typeorm'
 import { ChatRoom } from '../typeorm/models/ChatRoom'
 import { ChatRoomGraphQL } from './types/ChatRoomGraphQL'
+import { UserMessageGraphQL } from './types/UserMessageGraphQL'
 
 @Resolver(UserChatInfoGraphQL)
 export class ChatResolver {
@@ -42,5 +50,33 @@ export class ChatResolver {
   async chat(@Root() chat: UsersChats) {
     if (chat.chatId) return this.chatDataLoader.load(chat.chatId)
     else return null
+  }
+
+  @Mutation(() => Boolean)
+  async sendMessage(
+    @Arg('data', () => UserMessageGraphQL)
+    data: UserMessageGraphQL
+  ) {
+    const msg = new UsersChats()
+    msg.userId = data.userId
+    msg.chatId = 1
+    msg.message = data.message
+    msg.createdAt = new Date()
+    await msg.save()
+    return true
+  }
+
+  @Mutation(() => ChatRoomGraphQL)
+  async createChat() {
+    let chatRoom = await ChatRoom.findOne({ where: { id: 1 } })
+    if (chatRoom) {
+      return chatRoom
+    }
+    chatRoom = new ChatRoom()
+    chatRoom.id = 1
+    chatRoom.chatName = 'test_chat'
+    chatRoom.createdAt = new Date()
+    await chatRoom.save()
+    return chatRoom
   }
 }

@@ -14,7 +14,7 @@ export class ChatRoom extends BaseEntity {
   @Column({ type: 'varchar', length: 100 })
   chatName: string
   @Column({ type: 'datetime' })
-  createdAt: Date = new Date()
+  createdAt: Date
   @OneToMany(() => UsersChats, (userChat) => userChat.chat)
   chats: UsersChats[]
 }
