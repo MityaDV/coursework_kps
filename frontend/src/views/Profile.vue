@@ -1,5 +1,5 @@
 <template>
-  <button @click="loadData">Load profile data</button>
+  <button @click="loadDataProfile">Load profile data</button>
   {{ JSON.stringify(profileData) }}
 </template>
 
@@ -10,7 +10,7 @@ import gql from 'graphql-tag'
 export default class Profile extends Vue {
   profileData: any = {}
   // $store: any
-  async loadData() {
+  async loadDataProfile() {
     const res = await this.$apollo.query<Pick<Query, 'checkAuthorizationUser'>>(
       {
         query: gql`

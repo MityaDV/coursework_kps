@@ -24,14 +24,14 @@ export type ChatRoomGraphQl = {
 export type Mutation = {
   __typename?: 'Mutation';
   createChat: ChatRoomGraphQl;
-  sendMessage: Scalars['Boolean'];
+  sendMessage: UserMessageGraphQl;
   userLogin: UserRegisterGraphQl;
   userRegister: UserRegisterGraphQl;
 };
 
 
 export type MutationSendMessageArgs = {
-  data: UserMessageGraphQl;
+  data: UserMessageInputGraphQl;
 };
 
 
@@ -73,6 +73,11 @@ export type UserGraphQl = {
 };
 
 export type UserMessageGraphQl = {
+  __typename?: 'UserMessageGraphQl';
+  message: Scalars['String'];
+};
+
+export type UserMessageInputGraphQl = {
   chatId: Scalars['Int'];
   createdAt?: InputMaybe<Scalars['DateTime']>;
   message: Scalars['String'];

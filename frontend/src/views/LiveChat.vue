@@ -11,7 +11,7 @@
               <li>{{ chat.createdAt }}</li>
             </ul>
             <hr />
-            <form method="post" class="form-inline">
+            <form class="form-inline" @submit.prevent>
               <div class="input-group">
                 <input
                   type="text"
@@ -20,7 +20,12 @@
                   placeholder="Type your message..."
                 />
                 <div class="input-group-btn">
-                  <button class="btn btn-primary">Send</button>
+                  <button class="btn btn-primary" @click="sendMessage">
+                    Send
+                  </button>
+                  <!--                  <button class="btn btn-primary" @click="loadData">-->
+                  <!--                    GetData-->
+                  <!--                  </button>-->
                 </div>
               </div>
             </form>
@@ -77,6 +82,7 @@ import { Vue } from 'vue-class-component'
 import gql from 'graphql-tag'
 import {
   Mutation,
+  MutationSendMessageArgs,
   MutationUserLoginArgs,
   MutationUserRegisterArgs,
   Query,
@@ -85,10 +91,13 @@ import {
 export default class LiveChat extends Vue {
   username = ''
   password = ''
-  message = ''
-  userChatName = ''
 
-  userId = 0
+  message = ''
+  // userChatName = ''
+
+  userId: any = 0
+  chatId: any = 0
+
   data: any = []
   private $store: any
   errorMessages: any = []
@@ -120,9 +129,10 @@ export default class LiveChat extends Vue {
       .then((res) => {
         if (res.data?.userLogin.user.userName) {
           this.isEnter = true
-          this.userChatName = res.data?.userLogin.user.userName
           this.userId = res.data?.userLogin.user.id
+          this.chatId = 1
           this.$store.commit('setToken', res.data?.userLogin?.token || '')
+          this.loadData()
         }
       })
       .catch((error) => {
@@ -157,13 +167,13 @@ export default class LiveChat extends Vue {
         },
       })
       .then((res) => {
-        this.isEnter = true
         if (res.data?.userRegister.user.userName) {
+          this.createChat()
+          this.isEnter = true
+          this.userId = res.data?.userRegister.user.id
           this.$store.commit('setToken', res.data?.userRegister?.token || '')
+          this.loadData()
         }
-      })
-      .then(() => {
-        this.createChat()
       })
       .catch((error) => {
         this.errorMessages.length = 0
@@ -206,6 +216,34 @@ export default class LiveChat extends Vue {
         }
       `,
     })
+    this.chatId = res.data?.createChat.id
+  }
+
+  async sendMessage() {
+    const res = await this.$apollo.mutate<
+      Pick<Mutation, 'sendMessage'>,
+      MutationSendMessageArgs
+    >({
+      mutation: gql`
+        mutation ($data: UserMessageInputGraphQL!) {
+          sendMessage(data: $data) {
+            message
+          }
+        }
+      `,
+      variables: {
+        data: {
+          userId: this.userId,
+          chatId: this.chatId,
+          message: this.message,
+          createdAt: new Date(),
+        },
+      },
+    })
+    console.log(this.data)
+    console.log(this.userId)
+    console.log(this.chatId)
+    console.log('msg send')
   }
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
@@ -220,9 +258,6 @@ export default class LiveChat extends Vue {
       messages.push(errors.message)
     }
     return messages
-  }
-  created(): void {
-    this.loadData()
   }
 }
 </script>

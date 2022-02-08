@@ -1,7 +1,7 @@
 import { Field, InputType, Int } from 'type-graphql'
 
 @InputType()
-export class UserMessageGraphQL {
+export class UserMessageInputGraphQL {
   @Field(() => Int)
   userId: number
   @Field()

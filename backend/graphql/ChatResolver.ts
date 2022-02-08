@@ -14,7 +14,8 @@ import DataLoader from 'dataloader'
 import { In } from 'typeorm'
 import { ChatRoom } from '../typeorm/models/ChatRoom'
 import { ChatRoomGraphQL } from './types/ChatRoomGraphQL'
-import { UserMessageGraphQL } from './types/UserMessageGraphQL'
+import { UserMessageInputGraphQL } from './types/UserMessageInputGraphQL'
+import { UserMessageGraphQl } from './types/UserMessageGraphQl'
 
 @Resolver(UserChatInfoGraphQL)
 export class ChatResolver {
@@ -52,18 +53,18 @@ export class ChatResolver {
     else return null
   }
 
-  @Mutation(() => Boolean)
+  @Mutation(() => UserMessageGraphQl)
   async sendMessage(
-    @Arg('data', () => UserMessageGraphQL)
-    data: UserMessageGraphQL
-  ) {
+    @Arg('data', () => UserMessageInputGraphQL)
+    data: UserMessageInputGraphQL
+  ): Promise<UserMessageGraphQl> {
     const msg = new UsersChats()
-    msg.userId = data.userId
-    msg.chatId = 1
+    msg.user = { id: data.userId } as any
+    msg.chat = { id: data.chatId } as any
     msg.message = data.message
     msg.createdAt = new Date()
     await msg.save()
-    return true
+    return msg
   }
 
   @Mutation(() => ChatRoomGraphQL)

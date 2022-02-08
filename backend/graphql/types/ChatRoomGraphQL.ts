@@ -1,8 +1,8 @@
-import { Field, ID, ObjectType } from 'type-graphql'
+import { Field, ID, Int, ObjectType } from 'type-graphql'
 
 @ObjectType()
 export class ChatRoomGraphQL {
-  @Field(() => ID)
+  @Field(() => Int)
   id: number
   @Field(() => String)
   chatName: string
