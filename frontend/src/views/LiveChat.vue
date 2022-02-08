@@ -240,9 +240,6 @@ export default class LiveChat extends Vue {
         },
       },
     })
-    console.log(this.data)
-    console.log(this.userId)
-    console.log(this.chatId)
     console.log('msg send')
   }
 
