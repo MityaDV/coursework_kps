@@ -18,7 +18,7 @@ export type ChatRoomGraphQl = {
   __typename?: 'ChatRoomGraphQL';
   chatName: Scalars['String'];
   createdAt?: Maybe<Scalars['DateTime']>;
-  id: Scalars['ID'];
+  id: Scalars['Int'];
 };
 
 export type Mutation = {
@@ -49,6 +49,7 @@ export type Query = {
   checkAuthorizationUser: UserGraphQl;
   helloWorld?: Maybe<Scalars['String']>;
   sayHi: Scalars['String'];
+  updateChat: UserMessageGraphQl;
   userChatInfo: Array<UserChatInfoGraphQl>;
 };
 
@@ -57,12 +58,35 @@ export type QuerySayHiArgs = {
   msg?: InputMaybe<Scalars['String']>;
 };
 
+
+export type QueryUpdateChatArgs = {
+  data: UserChatUpdate;
+};
+
+export type Subscription = {
+  __typename?: 'Subscription';
+  chatUpdates: UserChatInfoGraphQl;
+};
+
 export type UserChatInfoGraphQl = {
   __typename?: 'UserChatInfoGraphQL';
   chat?: Maybe<ChatRoomGraphQl>;
   createdAt?: Maybe<Scalars['DateTime']>;
-  message: Scalars['String'];
+  id: Scalars['ID'];
+  message?: Maybe<Scalars['String']>;
   user?: Maybe<UserGraphQl>;
+};
+
+export type UserChatInfoInputGraphQl = {
+  id: Scalars['ID'];
+  message: Scalars['String'];
+};
+
+export type UserChatUpdate = {
+  chat?: InputMaybe<Scalars['Int']>;
+  id: Scalars['ID'];
+  message: Scalars['String'];
+  user?: InputMaybe<Scalars['Int']>;
 };
 
 export type UserGraphQl = {
@@ -78,10 +102,11 @@ export type UserMessageGraphQl = {
 };
 
 export type UserMessageInputGraphQl = {
-  chatId: Scalars['Int'];
+  chatId?: InputMaybe<Scalars['Int']>;
   createdAt?: InputMaybe<Scalars['DateTime']>;
+  id?: InputMaybe<Scalars['ID']>;
   message: Scalars['String'];
-  userId: Scalars['Int'];
+  userId?: InputMaybe<Scalars['Int']>;
 };
 
 export type UserRegisterGraphQl = {

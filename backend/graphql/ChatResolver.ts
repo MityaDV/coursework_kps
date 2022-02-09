@@ -2,11 +2,16 @@ import {
   Arg,
   FieldResolver,
   Mutation,
+  PubSubEngine,
   Query,
   Resolver,
   Root,
+  Subscription,
 } from 'type-graphql'
-import { UserChatInfoGraphQL } from './types/UserChatInfoGraphQL'
+import {
+  UserChatInfoGraphQL,
+  UserChatInfoInputGraphQL,
+} from './types/UserChatInfoGraphQL'
 import { UsersChats } from '../typeorm/models/UsersChats'
 import { UserGraphQL } from './types/UserGraphQL'
 import { User } from '../typeorm/models/User'
@@ -16,9 +21,14 @@ import { ChatRoom } from '../typeorm/models/ChatRoom'
 import { ChatRoomGraphQL } from './types/ChatRoomGraphQL'
 import { UserMessageInputGraphQL } from './types/UserMessageInputGraphQL'
 import { UserMessageGraphQl } from './types/UserMessageGraphQl'
+import { Inject, Service } from 'typedi'
+import { UserChatUpdate } from './types/UserChatUpdate'
 
+@Service()
 @Resolver(UserChatInfoGraphQL)
 export class ChatResolver {
+  @Inject('pubSub')
+  pubSub: PubSubEngine
   @Query(() => [UserChatInfoGraphQL])
   async userChatInfo() {
     return await UsersChats.find()
@@ -58,13 +68,13 @@ export class ChatResolver {
     @Arg('data', () => UserMessageInputGraphQL)
     data: UserMessageInputGraphQL
   ): Promise<UserMessageGraphQl> {
-    const msg = new UsersChats()
-    msg.user = { id: data.userId } as any
-    msg.chat = { id: data.chatId } as any
-    msg.message = data.message
-    msg.createdAt = new Date()
-    await msg.save()
-    return msg
+    const newMsg = new UsersChats()
+    newMsg.user = { id: data.userId } as any
+    newMsg.chat = { id: data.chatId } as any
+    newMsg.message = data.message
+    newMsg.createdAt = new Date()
+    await newMsg.save()
+    return newMsg
   }
 
   @Mutation(() => ChatRoomGraphQL)
@@ -79,5 +89,25 @@ export class ChatResolver {
     chatRoom.createdAt = new Date()
     await chatRoom.save()
     return chatRoom
+  }
+
+  @Query(() => UserMessageGraphQl)
+  async updateChat(
+    @Arg('data', () => UserChatUpdate)
+    data: UserChatUpdate
+  ) {
+    const { id, ...other } = data
+    // @ts-ignore
+    await UsersChats.update({ id }, other)
+    const usersChats = await UsersChats.findOneOrFail(id)
+    await this.pubSub.publish('CHAT_UPDATES', usersChats)
+    return usersChats
+  }
+
+  @Subscription(() => UserChatInfoGraphQL, {
+    topics: 'CHAT_UPDATES',
+  })
+  chatUpdates(@Root() chat: UsersChats): UserChatInfoGraphQL {
+    return chat as any
   }
 }

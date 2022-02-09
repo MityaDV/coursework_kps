@@ -23,9 +23,9 @@
                   <button class="btn btn-primary" @click="sendMessage">
                     Send
                   </button>
-                  <!--                  <button class="btn btn-primary" @click="loadData">-->
-                  <!--                    GetData-->
-                  <!--                  </button>-->
+                  <button class="btn btn-primary" @click="loadData">
+                    GetData
+                  </button>
                 </div>
               </div>
             </form>
@@ -86,6 +86,8 @@ import {
   MutationUserLoginArgs,
   MutationUserRegisterArgs,
   Query,
+  QueryUpdateChatArgs,
+  Subscription,
 } from '@/generated/graphql'
 
 export default class LiveChat extends Vue {
@@ -93,12 +95,12 @@ export default class LiveChat extends Vue {
   password = ''
 
   message = ''
-  // userChatName = ''
 
   userId: any = 0
   chatId: any = 0
 
   data: any = []
+  subscription: any
   private $store: any
   errorMessages: any = []
   isEnter = false
@@ -192,6 +194,7 @@ export default class LiveChat extends Vue {
               id
               userName
             }
+            id
             message
             createdAt
             chat {
@@ -201,7 +204,7 @@ export default class LiveChat extends Vue {
         }
       `,
     })
-    this.data.push(...res.data?.userChatInfo)
+    this.data?.push(...res.data?.userChatInfo)
   }
 
   async createChat() {
@@ -233,6 +236,7 @@ export default class LiveChat extends Vue {
       `,
       variables: {
         data: {
+          id: '',
           userId: this.userId,
           chatId: this.chatId,
           message: this.message,
@@ -241,6 +245,27 @@ export default class LiveChat extends Vue {
       },
     })
     console.log('msg send')
+    this.updateChat()
+  }
+
+  async updateChat() {
+    await this.$apollo.query<Pick<Query, 'updateChat'>, QueryUpdateChatArgs>({
+      query: gql`
+        query ($data: UserChatUpdate!) {
+          updateChat(data: $data) {
+            message
+          }
+        }
+      `,
+      variables: {
+        data: {
+          id: '',
+          user: this.userId,
+          chat: this.chatId,
+          message: this.message,
+        },
+      },
+    })
   }
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
@@ -255,6 +280,38 @@ export default class LiveChat extends Vue {
       messages.push(errors.message)
     }
     return messages
+  }
+
+  async created() {
+    this.subscription = this.$apollo
+      .subscribe<Pick<Subscription, 'chatUpdates'>>({
+        query: gql`
+          subscription {
+            chatUpdates {
+              id
+              message
+              createdAt
+              user {
+                id
+                userName
+                created
+              }
+              chat {
+                id
+                chatName
+                createdAt
+              }
+            }
+          }
+        `,
+      })
+      .subscribe((arr) => {
+        console.log(arr)
+        // this.data?.push(...arr.data?.chatUpdates)
+      })
+  }
+  unmounted(): void {
+    this.subscription.unsubscribe()
   }
 }
 </script>

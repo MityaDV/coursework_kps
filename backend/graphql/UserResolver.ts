@@ -7,8 +7,9 @@ import { UserRegisterGraphQL } from './types/UserRegisterGraphQL'
 import jwt from 'jsonwebtoken'
 import { Config } from './config'
 import { AppContext } from './types/AppContext'
-import { ChatRoomGraphQL } from './types/ChatRoomGraphQL'
+import { Service } from 'typedi'
 
+@Service()
 @Resolver()
 export class UserResolver {
   @Mutation(() => UserRegisterGraphQL)

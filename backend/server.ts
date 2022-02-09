@@ -10,17 +10,17 @@ import cookieParser from 'cookie-parser'
 import { chatRouter } from './typeorm/chatRouter'
 import { userRouter } from './typeorm/userRouter'
 import { userChatRouter } from './typeorm/userChatRouter'
-// import {
-//   ConnectionContext,
-//   SubscriptionServer,
-// } from 'subscriptions-transport-ws'
-// import { Container } from 'typedi'
-// import { execute, subscribe } from 'graphql'
-// import { PubSub } from 'graphql-subscriptions'
+import {
+  ConnectionContext,
+  SubscriptionServer,
+} from 'subscriptions-transport-ws'
+import { Container } from 'typedi'
+import { execute, subscribe } from 'graphql'
+import { PubSub } from 'graphql-subscriptions'
 
 async function startServer() {
-  // const pubSub = new PubSub()
-  // Container.set('pubSub', pubSub)
+  const pubSub = new PubSub()
+  Container.set('pubSub', pubSub)
   const app = express()
   app.use(cookieParser())
   app.use('/user', userRouter)
@@ -43,46 +43,46 @@ async function startServer() {
   console.log('db connected')
   const ext = process.env.NODE_ENV === 'production' ? 'js' : 'ts'
   const schema = await buildSchema({
-    // pubSub,
+    pubSub,
     resolvers: [`${__dirname}/graphql/**/*Resolver.${ext}`],
     dateScalarMode: 'isoDate',
     authChecker: (resolverData, roles) => {
       return !!resolverData.context.user
     },
-    // container: Container,
+    container: Container,
   })
-  // const subscriptionServer = SubscriptionServer.create(
-  //   {
-  //     schema,
-  //     execute,
-  //     subscribe,
-  //     async onConnect(
-  //       connectionParams: any,
-  //       socket: WebSocket,
-  //       ctx: ConnectionContext
-  //     ) {
-  //       // console.log('ws', ctx.request.headers)
-  //     },
-  //   },
-  //   {
-  //     server: httpServer,
-  //     path: '/graphql',
-  //   }
-  // )
+  const subscriptionServer = SubscriptionServer.create(
+    {
+      schema,
+      execute,
+      subscribe,
+      async onConnect(
+        connectionParams: any,
+        socket: WebSocket,
+        ctx: ConnectionContext
+      ) {
+        // console.log('ws', ctx.request.headers)
+      },
+    },
+    {
+      server: httpServer,
+      path: '/graphql',
+    }
+  )
   const apolloServer = new ApolloServer({
     schema: schema,
     introspection: process.env.NODE_ENV != 'production',
     plugins: [
       ApolloServerPluginDrainHttpServer({ httpServer }),
-      // {
-      //   async serverWillStart() {
-      //     return {
-      //       async drainServer() {
-      //         subscriptionServer.close()
-      //       },
-      //     }
-      //   },
-      // },
+      {
+        async serverWillStart() {
+          return {
+            async drainServer() {
+              subscriptionServer.close()
+            },
+          }
+        },
+      },
     ],
     context: (session) => {
       const out: any = {}

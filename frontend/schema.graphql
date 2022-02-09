@@ -3,6 +3,7 @@
 schema {
     query: Query
     mutation: Mutation
+    subscription: Subscription
 }
 
 type ChatRoomGraphQL {
@@ -22,13 +23,19 @@ type Query {
     checkAuthorizationUser: UserGraphQL!
     helloWorld: String
     sayHi(msg: String): String!
+    updateChat(data: UserChatUpdate!): UserMessageGraphQl!
     userChatInfo: [UserChatInfoGraphQL!]!
+}
+
+type Subscription {
+    chatUpdates: UserChatInfoGraphQL!
 }
 
 type UserChatInfoGraphQL {
     chat: ChatRoomGraphQL
     createdAt: DateTime
-    message: String!
+    id: ID!
+    message: String
     user: UserGraphQL
 }
 
@@ -50,11 +57,24 @@ type UserRegisterGraphQL {
 "The javascript `Date` as string. Type represents date and time as the ISO Date string."
 scalar DateTime
 
-input UserMessageInputGraphQL {
-    chatId: ID!
-    createdAt: DateTime = "2022-02-08T19:46:01.758Z"
+input UserChatInfoInputGraphQL {
+    id: ID!
     message: String!
-    userId: ID!
+}
+
+input UserChatUpdate {
+    chat: Int
+    id: ID!
+    message: String!
+    user: Int
+}
+
+input UserMessageInputGraphQL {
+    chatId: Int
+    createdAt: DateTime = "2022-02-09T19:55:55.806Z"
+    id: ID
+    message: String!
+    userId: Int
 }
 
 input UserRegisterInputGraphQL {
