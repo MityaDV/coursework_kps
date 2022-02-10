@@ -47,14 +47,7 @@ export type MutationUserRegisterArgs = {
 export type Query = {
   __typename?: 'Query';
   checkAuthorizationUser: UserGraphQl;
-  helloWorld?: Maybe<Scalars['String']>;
-  sayHi: Scalars['String'];
   userChatInfo: Array<UserChatInfoGraphQl>;
-};
-
-
-export type QuerySayHiArgs = {
-  msg?: InputMaybe<Scalars['String']>;
 };
 
 export type Subscription = {

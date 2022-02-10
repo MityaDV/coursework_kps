@@ -1,4 +1,4 @@
-import { Field, ID, InputType, Int, ObjectType } from 'type-graphql'
+import { Field, ID, ObjectType } from 'type-graphql'
 import { UserGraphQL } from './UserGraphQL'
 import { ChatRoomGraphQL } from './ChatRoomGraphQL'
 

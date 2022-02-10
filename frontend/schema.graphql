@@ -21,8 +21,6 @@ type Mutation {
 
 type Query {
     checkAuthorizationUser: UserGraphQL!
-    helloWorld: String
-    sayHi(msg: String): String!
     userChatInfo: [UserChatInfoGraphQL!]!
 }
 
@@ -62,7 +60,7 @@ scalar DateTime
 
 input UserMessageInputGraphQL {
     chatId: Int!
-    createdAt: DateTime = "2022-02-10T13:22:16.661Z"
+    createdAt: DateTime = "2022-02-10T14:39:44.399Z"
     message: String!
     userId: Int!
 }

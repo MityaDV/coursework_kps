@@ -95,7 +95,6 @@ export default class LiveChat extends Vue {
   userId: any = 0
   chatId: any = 0
   userName: any = ''
-  // chatName: any = ''
 
   data: any = []
   subscription: any
@@ -131,7 +130,6 @@ export default class LiveChat extends Vue {
           this.isEnter = true
           this.userId = res.data?.userLogin.user.id
           this.chatId = 1
-          // this.username = res.data?.userLogin.user.userName
           this.$store.commit('setToken', res.data?.userLogin?.token || '')
         }
       })
@@ -226,9 +224,7 @@ export default class LiveChat extends Vue {
       })
       .then((res) => {
         this.userName = res.data?.sendMessage.user?.userName
-        console.log(this.data)
       })
-    console.log('msg send')
   }
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
@@ -295,6 +291,13 @@ export default class LiveChat extends Vue {
 }
 </script>
 <style>
+ul {
+  margin: 0 0 5px 0;
+  padding: 0;
+  list-style: none;
+  border: black 1px solid;
+}
+
 button {
   background: #2c3e50;
   border-radius: 3px;
