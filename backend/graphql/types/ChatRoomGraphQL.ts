@@ -6,6 +6,6 @@ export class ChatRoomGraphQL {
   id: number
   @Field(() => String)
   chatName: string
-  @Field(() => Date, { nullable: true })
+  @Field(() => Date)
   createdAt: Date
 }

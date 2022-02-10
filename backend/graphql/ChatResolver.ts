@@ -8,10 +8,7 @@ import {
   Root,
   Subscription,
 } from 'type-graphql'
-import {
-  UserChatInfoGraphQL,
-  UserChatInfoInputGraphQL,
-} from './types/UserChatInfoGraphQL'
+import { UserChatInfoGraphQL } from './types/UserChatInfoGraphQL'
 import { UsersChats } from '../typeorm/models/UsersChats'
 import { UserGraphQL } from './types/UserGraphQL'
 import { User } from '../typeorm/models/User'
@@ -22,7 +19,6 @@ import { ChatRoomGraphQL } from './types/ChatRoomGraphQL'
 import { UserMessageInputGraphQL } from './types/UserMessageInputGraphQL'
 import { UserMessageGraphQl } from './types/UserMessageGraphQl'
 import { Inject, Service } from 'typedi'
-import { UserChatUpdate } from './types/UserChatUpdate'
 
 @Service()
 @Resolver(UserChatInfoGraphQL)
@@ -68,13 +64,14 @@ export class ChatResolver {
     @Arg('data', () => UserMessageInputGraphQL)
     data: UserMessageInputGraphQL
   ): Promise<UserMessageGraphQl> {
-    const newMsg = new UsersChats()
-    newMsg.user = { id: data.userId } as any
-    newMsg.chat = { id: data.chatId } as any
-    newMsg.message = data.message
-    newMsg.createdAt = new Date()
-    await newMsg.save()
-    return newMsg
+    const msg = new UsersChats()
+    msg.user = { id: data.userId } as any
+    msg.chat = { id: data.chatId } as any
+    msg.message = data.message
+    msg.createdAt = new Date()
+    await msg.save()
+    await this.pubSub.publish('CHAT_UPDATES', msg)
+    return msg
   }
 
   @Mutation(() => ChatRoomGraphQL)
@@ -91,23 +88,10 @@ export class ChatResolver {
     return chatRoom
   }
 
-  @Query(() => UserMessageGraphQl)
-  async updateChat(
-    @Arg('data', () => UserChatUpdate)
-    data: UserChatUpdate
-  ) {
-    const { id, ...other } = data
-    // @ts-ignore
-    await UsersChats.update({ id }, other)
-    const usersChats = await UsersChats.findOneOrFail(id)
-    await this.pubSub.publish('CHAT_UPDATES', usersChats)
-    return usersChats
-  }
-
   @Subscription(() => UserChatInfoGraphQL, {
     topics: 'CHAT_UPDATES',
   })
-  chatUpdates(@Root() chat: UsersChats): UserChatInfoGraphQL {
+  chatUpdates(@Root() chat: UsersChats): UserMessageGraphQl {
     return chat as any
   }
 }

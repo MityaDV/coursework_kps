@@ -23,9 +23,6 @@
                   <button class="btn btn-primary" @click="sendMessage">
                     Send
                   </button>
-                  <button class="btn btn-primary" @click="loadData">
-                    GetData
-                  </button>
                 </div>
               </div>
             </form>
@@ -86,7 +83,6 @@ import {
   MutationUserLoginArgs,
   MutationUserRegisterArgs,
   Query,
-  QueryUpdateChatArgs,
   Subscription,
 } from '@/generated/graphql'
 
@@ -98,6 +94,8 @@ export default class LiveChat extends Vue {
 
   userId: any = 0
   chatId: any = 0
+  userName: any = ''
+  // chatName: any = ''
 
   data: any = []
   subscription: any
@@ -133,8 +131,8 @@ export default class LiveChat extends Vue {
           this.isEnter = true
           this.userId = res.data?.userLogin.user.id
           this.chatId = 1
+          // this.username = res.data?.userLogin.user.userName
           this.$store.commit('setToken', res.data?.userLogin?.token || '')
-          this.loadData()
         }
       })
       .catch((error) => {
@@ -173,8 +171,8 @@ export default class LiveChat extends Vue {
           this.createChat()
           this.isEnter = true
           this.userId = res.data?.userRegister.user.id
+          this.userName = res.data?.userRegister.user.userName
           this.$store.commit('setToken', res.data?.userRegister?.token || '')
-          this.loadData()
         }
       })
       .catch((error) => {
@@ -183,28 +181,6 @@ export default class LiveChat extends Vue {
           this.errorMessages.push(it)
         })
       })
-  }
-
-  async loadData() {
-    const res = await this.$apollo.query<Pick<Query, 'userChatInfo'>>({
-      query: gql`
-        query {
-          userChatInfo {
-            user {
-              id
-              userName
-            }
-            id
-            message
-            createdAt
-            chat {
-              chatName
-            }
-          }
-        }
-      `,
-    })
-    this.data?.push(...res.data?.userChatInfo)
   }
 
   async createChat() {
@@ -223,49 +199,36 @@ export default class LiveChat extends Vue {
   }
 
   async sendMessage() {
-    const res = await this.$apollo.mutate<
-      Pick<Mutation, 'sendMessage'>,
-      MutationSendMessageArgs
-    >({
-      mutation: gql`
-        mutation ($data: UserMessageInputGraphQL!) {
-          sendMessage(data: $data) {
-            message
+    const res = await this.$apollo
+      .mutate<Pick<Mutation, 'sendMessage'>, MutationSendMessageArgs>({
+        mutation: gql`
+          mutation ($data: UserMessageInputGraphQL!) {
+            sendMessage(data: $data) {
+              user {
+                id
+              }
+              message
+              createdAt
+              chat {
+                id
+              }
+            }
           }
-        }
-      `,
-      variables: {
-        data: {
-          id: '',
-          userId: this.userId,
-          chatId: this.chatId,
-          message: this.message,
-          createdAt: new Date(),
+        `,
+        variables: {
+          data: {
+            userId: this.userId,
+            chatId: this.chatId,
+            message: this.message,
+            createdAt: new Date(),
+          },
         },
-      },
-    })
+      })
+      .then((res) => {
+        this.userName = res.data?.sendMessage.user?.userName
+        console.log(this.data)
+      })
     console.log('msg send')
-    this.updateChat()
-  }
-
-  async updateChat() {
-    await this.$apollo.query<Pick<Query, 'updateChat'>, QueryUpdateChatArgs>({
-      query: gql`
-        query ($data: UserChatUpdate!) {
-          updateChat(data: $data) {
-            message
-          }
-        }
-      `,
-      variables: {
-        data: {
-          id: '',
-          user: this.userId,
-          chat: this.chatId,
-          message: this.message,
-        },
-      },
-    })
   }
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
@@ -283,31 +246,47 @@ export default class LiveChat extends Vue {
   }
 
   async created() {
+    const res = await this.$apollo.query<Pick<Query, 'userChatInfo'>>({
+      query: gql`
+        query {
+          userChatInfo {
+            user {
+              id
+              userName
+            }
+            message
+            createdAt
+            chat {
+              id
+              chatName
+            }
+          }
+        }
+      `,
+    })
+    this.data?.push(...res.data?.userChatInfo)
+
     this.subscription = this.$apollo
       .subscribe<Pick<Subscription, 'chatUpdates'>>({
         query: gql`
           subscription {
             chatUpdates {
-              id
-              message
-              createdAt
               user {
                 id
                 userName
-                created
               }
+              message
+              createdAt
               chat {
                 id
-                chatName
-                createdAt
               }
             }
           }
         `,
       })
-      .subscribe((arr) => {
-        console.log(arr)
-        // this.data?.push(...arr.data?.chatUpdates)
+
+      .subscribe((v) => {
+        this.data.push(v.data?.chatUpdates)
       })
   }
   unmounted(): void {

@@ -8,7 +8,7 @@ schema {
 
 type ChatRoomGraphQL {
     chatName: String!
-    createdAt: DateTime
+    createdAt: DateTime!
     id: Int!
 }
 
@@ -23,7 +23,6 @@ type Query {
     checkAuthorizationUser: UserGraphQL!
     helloWorld: String
     sayHi(msg: String): String!
-    updateChat(data: UserChatUpdate!): UserMessageGraphQl!
     userChatInfo: [UserChatInfoGraphQL!]!
 }
 
@@ -32,11 +31,11 @@ type Subscription {
 }
 
 type UserChatInfoGraphQL {
-    chat: ChatRoomGraphQL
-    createdAt: DateTime
+    chat: ChatRoomGraphQL!
+    createdAt: DateTime!
     id: ID!
     message: String
-    user: UserGraphQL
+    user: UserGraphQL!
 }
 
 type UserGraphQL {
@@ -46,7 +45,11 @@ type UserGraphQL {
 }
 
 type UserMessageGraphQl {
+    chat: ChatRoomGraphQL!
+    createdAt: DateTime!
+    id: ID!
     message: String!
+    user: UserGraphQL!
 }
 
 type UserRegisterGraphQL {
@@ -57,24 +60,11 @@ type UserRegisterGraphQL {
 "The javascript `Date` as string. Type represents date and time as the ISO Date string."
 scalar DateTime
 
-input UserChatInfoInputGraphQL {
-    id: ID!
-    message: String!
-}
-
-input UserChatUpdate {
-    chat: Int
-    id: ID!
-    message: String!
-    user: Int
-}
-
 input UserMessageInputGraphQL {
-    chatId: Int
-    createdAt: DateTime = "2022-02-09T19:55:55.806Z"
-    id: ID
+    chatId: Int!
+    createdAt: DateTime = "2022-02-10T13:22:16.661Z"
     message: String!
-    userId: Int
+    userId: Int!
 }
 
 input UserRegisterInputGraphQL {
