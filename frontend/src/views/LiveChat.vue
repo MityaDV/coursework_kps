@@ -224,6 +224,7 @@ export default class LiveChat extends Vue {
       })
       .then((res) => {
         this.userName = res.data?.sendMessage.user?.userName
+        this.message = ''
       })
   }
 
