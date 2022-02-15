@@ -12,6 +12,8 @@ export type Scalars = {
   Float: number;
   /** The javascript `Date` as string. Type represents date and time as the ISO Date string. */
   DateTime: any;
+  /** A string for time from ISO string */
+  TimeMsg: any;
 };
 
 export type ChatRoomGraphQl = {
@@ -58,7 +60,7 @@ export type Subscription = {
 export type UserChatInfoGraphQl = {
   __typename?: 'UserChatInfoGraphQL';
   chat: ChatRoomGraphQl;
-  createdAt: Scalars['DateTime'];
+  createdAt: Scalars['TimeMsg'];
   id: Scalars['ID'];
   message?: Maybe<Scalars['String']>;
   user: UserGraphQl;
@@ -74,7 +76,7 @@ export type UserGraphQl = {
 export type UserMessageGraphQl = {
   __typename?: 'UserMessageGraphQl';
   chat: ChatRoomGraphQl;
-  createdAt: Scalars['DateTime'];
+  createdAt: Scalars['TimeMsg'];
   id: Scalars['ID'];
   message: Scalars['String'];
   user: UserGraphQl;

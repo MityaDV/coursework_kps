@@ -17,6 +17,7 @@ import {
 import { Container } from 'typedi'
 import { execute, subscribe } from 'graphql'
 import { PubSub } from 'graphql-subscriptions'
+import { TimeResolver, TimeTypeDefinition } from 'graphql-scalars'
 
 async function startServer() {
   const pubSub = new PubSub()

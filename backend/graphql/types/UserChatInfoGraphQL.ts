@@ -1,6 +1,7 @@
 import { Field, ID, ObjectType } from 'type-graphql'
 import { UserGraphQL } from './UserGraphQL'
 import { ChatRoomGraphQL } from './ChatRoomGraphQL'
+import { TimeMsg } from './TimeScalar'
 
 @ObjectType()
 export class UserChatInfoGraphQL {
@@ -10,8 +11,8 @@ export class UserChatInfoGraphQL {
   user: UserGraphQL
   @Field(() => String, { nullable: true })
   message: string
-  @Field(() => Date)
-  createdAt: Date = new Date()
+  @Field(() => TimeMsg)
+  createdAt: string
   @Field(() => ChatRoomGraphQL)
   chat: ChatRoomGraphQL
 }

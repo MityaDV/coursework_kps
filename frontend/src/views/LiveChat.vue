@@ -263,6 +263,13 @@ export default class LiveChat extends Vue {
     })
     this.data?.push(...res.data?.userChatInfo)
 
+    // const newData = res.data.userChatInfo.forEach((it) => {
+    //   let t = new Date(it.createdAt)
+    //   it.createdAt = t.getHours() + ':' + t.getMinutes()
+    // })
+    // this.data?.push(...newData)
+    // console.log(newData)
+
     this.subscription = this.$apollo
       .subscribe<Pick<Subscription, 'chatUpdates'>>({
         query: gql`

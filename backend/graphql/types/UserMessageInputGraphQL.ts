@@ -1,4 +1,4 @@
-import { Field, ID, InputType, Int } from 'type-graphql'
+import { Field, InputType, Int } from 'type-graphql'
 
 @InputType()
 export class UserMessageInputGraphQL {
@@ -6,8 +6,8 @@ export class UserMessageInputGraphQL {
   userId: number
   @Field()
   message: string
-  @Field(() => Date)
-  createdAt: Date = new Date()
+  @Field({ nullable: true })
+  createdAt: Date
   @Field(() => Int)
   chatId: number
 }

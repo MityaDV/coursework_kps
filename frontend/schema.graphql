@@ -30,7 +30,7 @@ type Subscription {
 
 type UserChatInfoGraphQL {
     chat: ChatRoomGraphQL!
-    createdAt: DateTime!
+    createdAt: TimeMsg!
     id: ID!
     message: String
     user: UserGraphQL!
@@ -44,7 +44,7 @@ type UserGraphQL {
 
 type UserMessageGraphQl {
     chat: ChatRoomGraphQL!
-    createdAt: DateTime!
+    createdAt: TimeMsg!
     id: ID!
     message: String!
     user: UserGraphQL!
@@ -58,9 +58,12 @@ type UserRegisterGraphQL {
 "The javascript `Date` as string. Type represents date and time as the ISO Date string."
 scalar DateTime
 
+"A string for time from ISO string"
+scalar TimeMsg
+
 input UserMessageInputGraphQL {
     chatId: Int!
-    createdAt: DateTime = "2022-02-10T14:39:44.399Z"
+    createdAt: DateTime
     message: String!
     userId: Int!
 }
