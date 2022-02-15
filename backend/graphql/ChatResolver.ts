@@ -63,7 +63,7 @@ export class ChatResolver {
   async sendMessage(
     @Arg('data', () => UserMessageInputGraphQL)
     data: UserMessageInputGraphQL
-  ): Promise<UserMessageGraphQl> {
+  ): Promise<UsersChats> {
     const msg = new UsersChats()
     msg.user = { id: data.userId } as any
     msg.chat = { id: data.chatId } as any

@@ -3,10 +3,25 @@ import { GraphQLError, GraphQLScalarType, Kind } from 'graphql'
 export const TimeMsg = new GraphQLScalarType({
   name: 'TimeMsg',
   description: 'A string for time from ISO string',
-  serialize: (value: Date) => value.getHours() + ':' + value.getMinutes(),
+  serialize: (value: Date) => {
+    let hour = ''
+    let minute = ''
+
+    hour =
+      value.getHours() < 10
+        ? '0' + value.getHours()
+        : value.getHours().toString()
+
+    minute =
+      value.getMinutes() < 10
+        ? '0' + value.getMinutes()
+        : value.getMinutes().toString()
+
+    return hour + ':' + minute
+  },
   parseValue: (value: Date) => {
-    if (typeof value !== 'string') {
-      throw new GraphQLError('Field error: value must be string')
+    if (value === undefined) {
+      throw new GraphQLError('Field error: value must not be undefined')
     }
     return new Date()
   },
