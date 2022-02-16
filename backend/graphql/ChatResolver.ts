@@ -19,6 +19,7 @@ import { ChatRoomGraphQL } from './types/ChatRoomGraphQL'
 import { UserMessageInputGraphQL } from './types/UserMessageInputGraphQL'
 import { UserMessageGraphQl } from './types/UserMessageGraphQl'
 import { Inject, Service } from 'typedi'
+import { Raw } from 'typeorm/browser'
 
 @Service()
 @Resolver(UserChatInfoGraphQL)

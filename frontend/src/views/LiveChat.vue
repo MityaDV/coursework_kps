@@ -5,7 +5,7 @@
         <div class="card">
           <h3 class="card-header">Chat Room</h3>
           <div class="card-body">
-            <ul v-for="(chat, id) in data" :key="id">
+            <ul v-for="(chat, id) in filterData" :key="id">
               <li>{{ chat.user.userName }}</li>
               <li>{{ chat.message }}</li>
               <li>{{ chat.createdAt }}</li>
@@ -97,6 +97,7 @@ export default class LiveChat extends Vue {
   userName: any = ''
 
   data: any = []
+  filterData: any = []
   subscription: any
   private $store: any
   errorMessages: any = []
@@ -241,7 +242,12 @@ export default class LiveChat extends Vue {
     }
     return messages
   }
-
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+  static filterTime(arr: any[]) {
+    let date = new Date()
+    let time = date.getHours() - 2 + ':' + date.getMinutes()
+    return arr.filter((it: any) => it.createdAt > time)
+  }
   async created() {
     const res = await this.$apollo.query<Pick<Query, 'userChatInfo'>>({
       query: gql`
@@ -262,13 +268,7 @@ export default class LiveChat extends Vue {
       `,
     })
     this.data?.push(...res.data?.userChatInfo)
-
-    // const newData = res.data.userChatInfo.forEach((it) => {
-    //   let t = new Date(it.createdAt)
-    //   it.createdAt = t.getHours() + ':' + t.getMinutes()
-    // })
-    // this.data?.push(...newData)
-    // console.log(newData)
+    this.filterData = LiveChat.filterTime(this.data)
 
     this.subscription = this.$apollo
       .subscribe<Pick<Subscription, 'chatUpdates'>>({
@@ -290,7 +290,7 @@ export default class LiveChat extends Vue {
       })
 
       .subscribe((v) => {
-        this.data.push(v.data?.chatUpdates)
+        this.filterData.push(v.data?.chatUpdates)
       })
   }
   unmounted(): void {
